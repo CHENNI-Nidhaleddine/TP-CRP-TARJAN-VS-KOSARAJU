@@ -1,48 +1,44 @@
-#include<iostream>
-#include <list>
-#include <stack>
-#include <chrono>
 #include "Graph.h"
-using namespace std;
 
 // Note: when using time calculation 
 // we have to remove cout instructions in both algorithms
-int main()
+// the cout intructions are in lines 94, 117, 146, 151 in graph.h
+
+
+#define N 6
+int main(int argc, char** argv)
 {
  
-   
-    int nbV=10000;
-    int nbE=10000;
-    Graph g1=generateRandomGraph(nbV,nbE);
-    Graph g2=generateRandomGraph(nbV,nbE);
-    Graph g3=generateRandomGraph(nbV,nbE);
-    Graph g4=generateRandomGraph(nbV,nbE);
-    Graph g5=generateRandomGraph(nbV,nbE);
-    Graph g6=generateRandomGraph(nbV,nbE);
-   
+    int nbV=5000;
+    int nbE=1000;
+    if(nbE>nbV*(nbV-1)) return EXIT_FAILURE;
+
+    cout<<"Creation of "<<N<<" random graphs of same size ("<<nbV<<","<<nbE<<"):"<<endl;
+    Graph gs[N];
+    for(int i=0;i<N;++i){
+        gs[i]=generateRandomGraph(nbV,nbE);
+        // cout<<gs[i]<<endl;
+    }
+
+    cout<<"Applying Kosarju on the generated graphs"<<endl;
     auto start = chrono::high_resolution_clock::now();
-    g1.findSCC_Kosaraju();
-    g2.findSCC_Kosaraju();
-    g3.findSCC_Kosaraju();
-    g4.findSCC_Kosaraju();
-    g5.findSCC_Kosaraju();
-    g6.findSCC_Kosaraju();
-    cout<<(double)(sizeof(int)*(2*nbV+nbE*nbV))/(1024*1024) <<endl;
+    //Apply Kosaraju on N generated graphs
+    for(int i=0;i<N;++i){
+        gs[i].findSCC_Kosaraju();
+    }
     auto stop = chrono::high_resolution_clock::now();
     auto duration = chrono::duration_cast<chrono::microseconds>(stop - start);
-    cout << (double)(duration.count()/6) << endl;
-
-
+    cout <<"Duration:"<<(double)(duration.count()/N)<<" us"<<endl<<endl;
+    
+    cout<<"Applying Tarjan on the generated graphs"<<endl;
     auto start1 = chrono::high_resolution_clock::now();
-    g1.findSCC_Tarjan();
-    g2.findSCC_Tarjan();
-    g3.findSCC_Tarjan();
-    g4.findSCC_Tarjan();
-    g5.findSCC_Tarjan();
-    g6.findSCC_Tarjan();
+    //Apply Tarjan on N generated graphs
+    for(int i=0;i<N;++i){
+        gs[i].findSCC_Tarjan();
+    }
     auto stop1 = chrono::high_resolution_clock::now();
     auto duration1 = chrono::duration_cast<chrono::microseconds>(stop1 - start1);
-    cout << (double)(duration1.count()/6) << endl;
+    cout <<"Duration:"<<(double)(duration1.count()/N)<<" us"<< endl;
     
-     
+    return EXIT_SUCCESS; 
 }

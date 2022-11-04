@@ -2,6 +2,8 @@
 #include <list>
 #include <stack>
 #include <cstdlib> //use rand()
+#include <chrono> //calculate time
+
 #define UNVISITED false
 #define VISITED true
 #define UNSTACKED false
@@ -11,17 +13,23 @@ using namespace std;
 
 class Graph{
     int V;
-    list<int>* adj;
+    list<int>* adj; //adjacency list
+
+
     public:
     //Headers related to Graph itself
+    Graph();
     Graph(int V);
     void addEdge(int v,int w);
 
     //Customize cout to print the graph
     friend auto operator<<(std::ostream& os, Graph const& g) -> std::ostream&;
+
+    //
     friend Graph generateRandomGraph(int nbV,int nbE);
+
+
     //Headers related to Kosaraju's Algorithm
-  
     void sortOnTime(int v, stack<int> &stk, bool visited[]);//Sorting all vertices in term of finishing time O(V)
     Graph getTranspose(); //reverse the direction of all edges ex. 0->1 become 1->0 O(V+E)
     void dfs_for_kosaraju(int v,bool visited[]);//DFS according to the finishing time O(V+E)
@@ -33,6 +41,9 @@ class Graph{
 
     };
 
+Graph::Graph(){
+    this->V=0;
+}
 Graph::Graph(int V){
     this->V=V;
     this->adj=new list<int>[V];
@@ -128,11 +139,10 @@ void Graph::dfs_for_tarjan(int v,int num,int dfsnum[],int lowLink[],bool inStack
     int x;
 
 	if (dfsnum[v]==lowLink[v]) {
-		// Until stack st is empty
+		// Until stack  is empty
 		while (stk.top() != v) {
 			x = (int)stk.top();
             stk.pop();
-			// Print the node
 			cout << x << " ";
 			inStack[x] = UNSTACKED;
 		}
